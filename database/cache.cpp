@@ -22,9 +22,9 @@ namespace database
             _client = ignite::thin::IgniteClient::Start(cfg);
             _cache = _client.GetOrCreateCache<long, std::string>("authors");
         }
-        catch (ignite::IgniteError err)
+        catch (ignite::IgniteError* err)
         {
-            std::cout << "error:" << err.what() << std::endl;
+            std::cout << "error:" << err->what() << std::endl;
             throw;
         }
     }

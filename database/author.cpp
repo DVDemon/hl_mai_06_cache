@@ -100,9 +100,7 @@ namespace database
                 range(0, 1); //  iterate over result set one row at a time
 
             if (!select.done())
-            {
-                select.execute();
-            }
+            if (!select.execute()) throw std::logic_error("Item not found");
 
             return a;
         }
@@ -131,9 +129,9 @@ namespace database
             else
                 throw std::logic_error("key not found in the cache");
         }
-        catch (std::exception err)
+        catch (std::exception* err)
         {
-            //std::cout << "error:" << err.what() << std::endl;
+            std::cerr << "error:" << err->what() << std::endl;
             throw;
         }
     }
@@ -181,8 +179,7 @@ namespace database
 
             while (!select.done())
             {
-                select.execute();
-                result.push_back(a);
+                if(select.execute())  result.push_back(a);
             }
             return result;
         }
@@ -222,8 +219,7 @@ namespace database
 
             while (!select.done())
             {
-                select.execute();
-                result.push_back(a);
+                if(select.execute()) result.push_back(a);
             }
             return result;
         }
@@ -264,10 +260,8 @@ namespace database
                 into(_id),
                 range(0, 1); //  iterate over result set one row at a time
 
-            if (!select.done())
-            {
-                select.execute();
-            }
+            if (!select.done())  select.execute();
+            
             std::cout << "inserted:" << _id << std::endl;
         }
         catch (Poco::Data::MySQL::ConnectionException &e)

@@ -103,7 +103,7 @@ public:
     void handleRequest(HTTPServerRequest &request,
                        HTTPServerResponse &response)
     {
-        //static std::map<long,database::Author> my_cache;
+        // static std::map<long,database::Author> my_cache;
 
         HTMLForm form(request, request.stream());
         response.setChunkedTransferEncoding(true);
@@ -133,20 +133,20 @@ public:
                     std::cout << "cache missed for id:" << id << std::endl;
                 }
             }
-            
+
             try
             {
                 database::Author result = database::Author::read_by_id(id);
-                //my_cache[id]=result;
+                // my_cache[id]=result;
                 if (!no_cache)
                     result.save_to_cache();
-                //std::cout << "cache size:" << database::Author::size_of_cache() << std::endl;
+                // std::cout << "cache size:" << database::Author::size_of_cache() << std::endl;
                 Poco::JSON::Stringifier::stringify(result.toJSON(), ostr);
                 return;
             }
-            catch (...)
+            catch (std::exception &ex)
             {
-                ostr << "{ \"result\": false , \"reason\": \"not gound\" }";
+                ostr << "{ \"result\": false , \"reason\": \"" << ex.what() << "\" }";
                 return;
             }
         }
@@ -215,7 +215,9 @@ public:
                                     // пишем и в БД и в кеш
                                     author.save_to_mysql();
                                     author.save_to_cache();
-                                    ostr << "{ \"result\": true }";
+                                    ostr << "{ \"result\": \"";
+                                    ostr << author.id();
+                                    ostr << "\"}";
                                     return;
                                 }
                                 catch (...)

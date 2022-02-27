@@ -41,14 +41,15 @@ using Poco::Util::ServerApplication;
 #include "../config/config.h"
 #include "../database/author.h"
 
-
 class HTTPWebServer : public Poco::Util::ServerApplication
 {
 public:
-    HTTPWebServer() : _helpRequested(false){
+    HTTPWebServer() : _helpRequested(false)
+    {
     }
 
-    ~HTTPWebServer(){
+    ~HTTPWebServer()
+    {
     }
 
 protected:
@@ -113,7 +114,6 @@ protected:
                 .repeatable(false)
                 .argument("value")
                 .callback(OptionCallback<HTTPWebServer>(this, &HTTPWebServer::handleCacheServers)));
-        
     }
 
     void handleInitDB([[maybe_unused]] const std::string &name,
@@ -135,12 +135,12 @@ protected:
         Config::get().password() = value;
     }
 
-     void handleDatabase([[maybe_unused]] const std::string &name,
-                         [[maybe_unused]] const std::string &value)
+    void handleDatabase([[maybe_unused]] const std::string &name,
+                        [[maybe_unused]] const std::string &value)
     {
         std::cout << "database:" << value << std::endl;
         Config::get().database() = value;
-    }   
+    }
     void handlePort([[maybe_unused]] const std::string &name,
                     [[maybe_unused]] const std::string &value)
     {
@@ -149,14 +149,14 @@ protected:
     }
 
     void handleHost([[maybe_unused]] const std::string &name,
-                      [[maybe_unused]] const std::string &value)
+                    [[maybe_unused]] const std::string &value)
     {
         std::cout << "host:" << value << std::endl;
         Config::get().host() = value;
     }
 
     void handleCacheServers([[maybe_unused]] const std::string &name,
-                       [[maybe_unused]] const std::string &value)
+                            [[maybe_unused]] const std::string &value)
     {
         std::cout << "cache servers:" << value << std::endl;
         Config::get().cache_servers() = value;
@@ -185,8 +185,8 @@ protected:
             std::string format(
                 config().getString("HTTPWebServer.format",
                                    DateTimeFormat::SORTABLE_FORMAT));
-            
-            //database::Author::warm_up_cache();
+
+            // database::Author::warm_up_cache();
 
             ServerSocket svs(Poco::Net::SocketAddress("0.0.0.0", port));
             HTTPServer srv(new HTTPRequestFactory(format),
