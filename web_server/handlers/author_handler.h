@@ -103,7 +103,6 @@ public:
     void handleRequest(HTTPServerRequest &request,
                        HTTPServerResponse &response)
     {
-        // static std::map<long,database::Author> my_cache;
 
         HTMLForm form(request, request.stream());
         response.setChunkedTransferEncoding(true);
@@ -117,8 +116,6 @@ public:
             if (form.has("no_cache"))
                 no_cache = true;
             // read from cache
-            // Шаблон «сквозное чтение»
-            // если записи нет в кеше - ситаем из БД
             if (!no_cache)
             {
                 try
@@ -136,11 +133,12 @@ public:
 
             try
             {
+                // Шаблон «сквозное чтение»
+                // если записи нет в кеше - ситаем из БД
+                // и записываем в кеш
                 database::Author result = database::Author::read_by_id(id);
-                // my_cache[id]=result;
                 if (!no_cache)
                     result.save_to_cache();
-                // std::cout << "cache size:" << database::Author::size_of_cache() << std::endl;
                 Poco::JSON::Stringifier::stringify(result.toJSON(), ostr);
                 return;
             }
