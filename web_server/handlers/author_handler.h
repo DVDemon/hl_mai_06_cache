@@ -118,13 +118,11 @@ public:
             // read from cache
             if (!no_cache)
             {
-                    std::optional<database::Author> result = database::Author::read_from_cache_by_id(id);
-                    
+                    std::optional<database::Author> result = database::Author::read_from_cache_by_id(id);                
                     if(result){
                      Poco::JSON::Stringifier::stringify(result->toJSON(), ostr);
                      return;
                     }
-
             }
 
             try
