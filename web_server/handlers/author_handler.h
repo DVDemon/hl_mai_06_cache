@@ -118,17 +118,13 @@ public:
             // read from cache
             if (!no_cache)
             {
-                try
-                {
-                    database::Author result = database::Author::read_from_cache_by_id(id);
-                    std::cout << "item from cache:" << id << std::endl;
-                    Poco::JSON::Stringifier::stringify(result.toJSON(), ostr);
-                    return;
-                }
-                catch (...)
-                {
-                    std::cout << "cache missed for id:" << id << std::endl;
-                }
+                    std::optional<database::Author> result = database::Author::read_from_cache_by_id(id);
+                    
+                    if(result){
+                     Poco::JSON::Stringifier::stringify(result->toJSON(), ostr);
+                     return;
+                    }
+
             }
 
             try

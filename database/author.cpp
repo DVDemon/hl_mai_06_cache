@@ -118,7 +118,7 @@ namespace database
         }
     }
 
-    Author Author::read_from_cache_by_id(long id)
+    std::optional<Author> Author::read_from_cache_by_id(long id)
     {
 
         try
@@ -127,7 +127,7 @@ namespace database
             if (database::Cache::get().get(id, result))
                 return fromJSON(result);
             else
-                throw std::logic_error("key not found in the cache");
+                return std::optional<Author>();
         }
         catch (std::exception* err)
         {
